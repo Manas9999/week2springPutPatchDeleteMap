@@ -3,6 +3,7 @@ package com.week2.spirngmvc.SpringMVC.controllers;
 import com.week2.spirngmvc.SpringMVC.dto.EmployeeDTO;
 import com.week2.spirngmvc.SpringMVC.entities.EmployeeEntity;
 import com.week2.spirngmvc.SpringMVC.respositories.EmployeeRepository;
+import com.week2.spirngmvc.SpringMVC.services.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -81,24 +82,26 @@ public class EmployeeController {
     //is not the standard but we can do. we have entity and employee repository so lets perfomr crud operations using controller
     //but leter we will make a serverice layer to interact with repository layer
 
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeService employeeService;
 
-    public EmployeeController(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+
+
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
 
 
     @GetMapping("/{employeeID}")
-    public EmployeeEntity getEmployeeByID(@PathVariable(name="employeeID") Long Id){
-        return (EmployeeEntity) employeeRepository.findById(Id).orElse(null);
+    public EmployeeDTO getEmployeeByID(@PathVariable(name="employeeID") Long Id){
+        return employeeService.getEmployeeByID(Id);
     }
     @GetMapping
-    public List<EmployeeEntity> getAllEmployees(@RequestParam(required = false,name = "inputAge") Integer age, @RequestParam(required = false)String sortBy){
-        return employeeRepository.findAll();
+    public List<EmployeeDTO> getAllEmployees(@RequestParam(required = false,name = "inputAge") Integer age, @RequestParam(required = false)String sortBy){
+        return employeeService.getAllEmployees();
     }
     @PostMapping
-    public  EmployeeEntity createNewEmployee(@RequestBody EmployeeEntity inputEmployee){
-        return (EmployeeEntity) employeeRepository.save(inputEmployee);
+    public  EmployeeDTO createNewEmployee(@RequestBody EmployeeEntity inputEmployee){
+        return employeeService.createNewEmployee(inputEmployee);
     }
 
 //    @PutMapping
