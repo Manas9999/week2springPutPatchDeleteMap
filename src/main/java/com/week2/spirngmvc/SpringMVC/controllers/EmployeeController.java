@@ -4,10 +4,14 @@ import com.week2.spirngmvc.SpringMVC.dto.EmployeeDTO;
 import com.week2.spirngmvc.SpringMVC.entities.EmployeeEntity;
 import com.week2.spirngmvc.SpringMVC.respositories.EmployeeRepository;
 import com.week2.spirngmvc.SpringMVC.services.EmployeeService;
+import com.week2.spirngmvc.SpringMVC.services.ResourceNotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/employees")
@@ -91,9 +95,16 @@ public class EmployeeController {
     }
 
 
-    @GetMapping("/{employeeID}")
-    public EmployeeDTO getEmployeeByID(@PathVariable(name="employeeID") Long Id){
-        return employeeService.getEmployeeByID(Id);
+//    @GetMapping("/{employeeID}")
+//    public Optional<EmployeeDTO> getEmployeeByID(@PathVariable(name="employeeID") Long Id){
+//        return employeeService.getEmployeeByID(Id);
+//    }
+    @GetMapping(path = "/{employeeId}")
+    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable(name = "employeeId") Long id) {
+        Optional<EmployeeDTO> employeeDTO = employeeService.getEmployeeById(id);
+        return employeeDTO
+                .map(employeeDTO1 -> ResponseEntity.ok(employeeDTO1))
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: "+id));
     }
     @GetMapping
     public List<EmployeeDTO> getAllEmployees(@RequestParam(required = false,name = "inputAge") Integer age, @RequestParam(required = false)String sortBy){
@@ -104,9 +115,19 @@ public class EmployeeController {
         return employeeService.createNewEmployee(inputEmployee);
     }
 
-//    @PutMapping
-//    public  String updateEmployeeById(){
-//        return "updating employee";
-//    }
+    @PutMapping(path = "/{employeeID}")
+    public  EmployeeDTO updateEmployeeById(@RequestBody EmployeeDTO employeeDTO, @PathVariable Long employeeID){
+        return employeeService.updateEmployeeById(employeeID,employeeDTO);
+    }
+    @DeleteMapping("/{EmployeeID}")
+    public boolean deleteEmployeeById(@PathVariable Long EmployeeID){
+        return employeeService.deleteEmployeeById(EmployeeID);
+    }
+    @PatchMapping(path = "/{employeeID}")
+    public EmployeeDTO updatePartialEmployeeById(@RequestBody Map<String,Object>updates,
+                                                 @PathVariable Long employeeID){
+        return employeeService.updatePartialEmployeeById(employeeID,updates);
+    }
+
 
 }

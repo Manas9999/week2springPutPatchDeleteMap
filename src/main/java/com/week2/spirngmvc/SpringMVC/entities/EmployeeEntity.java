@@ -26,4 +26,11 @@ public class EmployeeEntity {
     private Integer age;
     private Boolean isActive;
     private LocalDate dateOfJoining;
+    @Version
+    private Long version;
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
