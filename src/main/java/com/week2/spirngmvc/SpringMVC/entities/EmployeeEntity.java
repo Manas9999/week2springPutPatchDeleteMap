@@ -1,6 +1,7 @@
 package com.week2.spirngmvc.SpringMVC.entities;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,18 +20,21 @@ import java.time.LocalDate;
 @Table(name = "Employees")
 public class EmployeeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String name;
     private String email;
     private Integer age;
+    @JsonProperty("isActive")
     private Boolean isActive;
     private LocalDate dateOfJoining;
-    @Version
-    private Long version;
+    private String role;
+    private Double salary;
+//    @Version
+//    private Long version;
 
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
 }

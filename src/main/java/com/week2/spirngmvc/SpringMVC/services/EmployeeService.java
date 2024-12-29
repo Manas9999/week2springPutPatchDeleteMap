@@ -6,6 +6,7 @@ import com.week2.spirngmvc.SpringMVC.respositories.EmployeeRepository;
 import org.apache.el.util.ReflectionUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 import  com.week2.spirngmvc.SpringMVC.services.ResourceNotFoundException;
 import java.io.File;
@@ -47,7 +48,7 @@ public class EmployeeService {
                 .map(employeeEntity -> modelMapper.map(employeeEntity,EmployeeDTO.class))
                 .collect(Collectors.toList());
     }
-    public  EmployeeDTO createNewEmployee(EmployeeEntity employeeDTO){
+    public  EmployeeDTO createNewEmployee(EmployeeDTO employeeDTO){
         //we have to convert the dto to entity inrder to save in the repository
         //here we can perform authorization like user is admin or not
         //loggin also
@@ -55,7 +56,7 @@ public class EmployeeService {
         EmployeeEntity savedEmployeeEntity=employeeRepository.save(employeeEntity);
         return modelMapper.map(savedEmployeeEntity,EmployeeDTO.class);
     }
-
+//    @Transactional
     public EmployeeDTO updateEmployeeById(Long employeeID, EmployeeDTO employeeDTO) {
         EmployeeEntity employeeEntity=modelMapper.map(employeeDTO,EmployeeEntity.class);
         employeeEntity.setId(employeeID);
@@ -67,9 +68,10 @@ public class EmployeeService {
         if(!exists) throw new ResourceNotFoundException("Employee not found with id: "+employeeId);
     }
 
-    public boolean deleteEmployeeById(Long employeeID) {
-        isExistsByEmployeeId(employeeID);
-        employeeRepository.deleteById(employeeID);
+
+    public boolean deleteEmployeeById(Long employeeId) {
+        isExistsByEmployeeId(employeeId);
+        employeeRepository.deleteById(employeeId);
         return true;
     }
 
